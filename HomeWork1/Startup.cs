@@ -32,6 +32,7 @@ namespace HomeWork1
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWork1", Version = "v1" });
             });
+            services.AddSingleton<TemperatureValues>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
