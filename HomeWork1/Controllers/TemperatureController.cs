@@ -11,51 +11,47 @@ namespace HomeWork1.Controllers
     [ApiController]
     public class TemperatureController : ControllerBase
     {
-        private readonly TemperatureValues temperatureValues;
-
+        private readonly TemperatureValues _temperatureValues;
         public TemperatureController(TemperatureValues temperatureValues)
         {
-            this.temperatureValues = temperatureValues;
+            _temperatureValues = temperatureValues;
         }
 
         [HttpPost("create")]
         public IActionResult Create([FromQuery] Temperature temperatureDto)
         {
-
-            temperatureValues.temperatures.Add(temperatureDto);
-
+            _temperatureValues.temperatures.Add(temperatureDto);
             return Ok();
         }
 
         [HttpGet("read")]
-        public IActionResult Read([FromQuery] DateTime DateStart, [FromQuery] DateTime DateEnd)
+        public IActionResult Read([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
         {
-            TemperatureValues temperatureValuesToRead = new();
-            temperatureValuesToRead.temperatures = temperatureValues.temperatures
-                .Where(temperature => temperature.Date >= DateStart && temperature.Date <= DateEnd)
-                .Select(temperature => temperature)
+            var temperatureValuesToRead = _temperatureValues.temperatures
+                .Where(temperature => temperature.Date >= dateStart && temperature.Date <= dateEnd)
                 .ToList();
-
-            return Ok(temperatureValuesToRead.temperatures);
+            return Ok(temperatureValuesToRead);
         }
 
         [HttpPut("update")]
         public IActionResult Update([FromQuery] Temperature temperature)
         {
-            foreach (var hold in temperatureValues.temperatures)
+            foreach (var hold in _temperatureValues.temperatures)
+            {
                 if (hold.Date == temperature.Date)
+                {
                     hold.TemperatureC = temperature.TemperatureC;
+                }
+            }
             return Ok();
         }
 
         [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] DateTime DateStart, [FromQuery] DateTime DataEnd)
+        public IActionResult Delete([FromQuery] DateTime dateStart, [FromQuery] DateTime dataEnd)
         {
-            foreach (var e in temperatureValues.temperatures)
-                if (e.Date >= DateStart && e.Date <= DataEnd)
-                    temperatureValues.temperatures.Remove(e);
+            _temperatureValues.temperatures
+                .RemoveAll(temperature => temperature.Date >= dateStart && temperature.Date <= dataEnd);
             return Ok();
         }
-
     }
 }
