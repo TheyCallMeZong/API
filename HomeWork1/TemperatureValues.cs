@@ -7,13 +7,10 @@ namespace HomeWork1
 {
     public class TemperatureValues
     {
-
         public List<Temperature> temperatures;
-
         public TemperatureValues()
         {
             temperatures = new List<Temperature>();
         }
-
     }
 }

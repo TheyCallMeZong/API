@@ -7,11 +7,7 @@ namespace HomeWork1
 {
     public class Temperature
     {
-
         public int TemperatureC { get; set; }
-
-
         public DateTime Date { get; set; }
-
     }
 }
