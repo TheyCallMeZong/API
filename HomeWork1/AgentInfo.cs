@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace HomeWork1
 {
-    public class Temperature
+    public class AgentInfo
     {
-        public int TemperatureC { get; set; }
-        public DateTime Date { get; set; }
+        public int AgentId { get; }
+
+        public Uri AgentAdress { get; }
     }
 }

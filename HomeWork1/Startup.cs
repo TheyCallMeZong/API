@@ -1,3 +1,4 @@
+using HomeWork1.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,9 +31,9 @@ namespace HomeWork1
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWork1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Metrics", Version = "v1" });
             });
-            services.AddSingleton<TemperatureValues>();
+            services.AddSingleton<CpuMetricsController>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
