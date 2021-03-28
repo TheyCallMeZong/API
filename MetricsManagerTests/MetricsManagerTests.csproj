@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HomeWork1\MetricsManager.csproj" />
     <ProjectReference Include="..\MetricsCommon\MetricsCommon.csproj" />
+    <ProjectReference Include="..\MetricsManager\MetricsManager.csproj" />
   </ItemGroup>
 
 </Project>
