@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeWork1\MetricsManager.csproj" />
+    <ProjectReference Include="..\MetricsCommon\MetricsCommon.csproj" />
   </ItemGroup>
 
 </Project>

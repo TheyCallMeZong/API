@@ -3,6 +3,7 @@ using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
+using MetricsCommon;
 
 namespace MetricsManagerTests
 {

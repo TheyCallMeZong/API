@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.31112.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManager", "HomeWork1\MetricsManager.csproj", "{A910AC7C-998A-4F2D-A7D9-1F3356D0A51D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{C1B1A72A-6DFB-4192-91BA-80B0286D2254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{C1B1A72A-6DFB-4192-91BA-80B0286D2254}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsManagerTests", "MetricsManagerTests\MetricsManagerTests.csproj", "{05BC2053-9EC6-42B2-A9C9-D6CCC9BE647E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManagerTests", "MetricsManagerTests\MetricsManagerTests.csproj", "{05BC2053-9EC6-42B2-A9C9-D6CCC9BE647E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgentTests", "MetricsAgentTests\MetricsAgentTests.csproj", "{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgentTests", "MetricsAgentTests\MetricsAgentTests.csproj", "{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsCommon", "MetricsCommon\MetricsCommon.csproj", "{EF506270-5C76-4A6C-B68C-C18ED6C668CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF506270-5C76-4A6C-B68C-C18ED6C668CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF506270-5C76-4A6C-B68C-C18ED6C668CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF506270-5C76-4A6C-B68C-C18ED6C668CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF506270-5C76-4A6C-B68C-C18ED6C668CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
