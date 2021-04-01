@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,15 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class NetWorkMetricsController : ControllerBase
     {
+        private readonly ILogger<NetWorkMetricsController> _logger;
+        public NetWorkMetricsController(ILogger<NetWorkMetricsController> logger)
+        {
+            _logger = logger;
+        }
         [HttpGet("from/{fromTime}/to/{toTime}/")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, TimeSpan toTime)
         {
+            _logger.LogInformation("GetMetrics in NetWorkMetricsController");
             return Ok();
         }  
     }
