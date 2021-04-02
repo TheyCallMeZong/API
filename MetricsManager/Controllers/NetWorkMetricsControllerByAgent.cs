@@ -22,14 +22,14 @@ namespace MetricsManager.Controllers
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}/")]
         public IActionResult GetMetrics([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, TimeSpan toTime)
         {
-            _logger.LogInformation("GetMetrics in NetWorkMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {agentId} + {fromTime.ToString()} + {toTime.ToString()}");
             return Ok();
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("GetMetricsFromAllCluster in NetWorkMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {fromTime.ToString()} + {toTime.ToString()}");
             return Ok();
         }
 
@@ -37,7 +37,7 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsByPercentileFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime,
             [FromRoute] Percentile percentile)
         {
-            _logger.LogInformation("GetMetricsByPercentileFromAllCluster in NetWorkMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {fromTime.ToString()} + {toTime.ToString()} + {percentile}");
             return Ok();
         }
 

@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsAgent.DB.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -13,15 +9,20 @@ namespace MetricsManager.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
-        public HddMetricsController(ILogger<HddMetricsController> logger)
+        private IRepositoryHddMetrics _repository;
+        public HddMetricsController(ILogger<HddMetricsController> logger, IRepositoryHddMetrics repository)
         {
             _logger = logger;
+            _repository = repository;
         }
 
         [HttpGet("left")]
         public IActionResult GetFreeSpaceSize()
         {
             _logger.LogInformation("GetFreeSpaceSize in HddMetricsController");
+            _repository.Create(new MetricsAgent.DB.Data.HddMetrics
+            {
+            });
             return Ok();
         }
     }

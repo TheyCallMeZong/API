@@ -23,14 +23,14 @@ namespace MetricsManager.Controllers
         [HttpGet("agent/{agentId}/left")]
         public IActionResult GetFreeSpaceSize([FromRoute] int agentId)
         {
-            _logger.LogInformation("GetFreeSpaceSize in HddMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {agentId}");
             return Ok();
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("GetMetricsFromAllCluster in HddMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {fromTime.ToString()} + {toTime.ToString()}");
             return Ok();
         }
 
@@ -38,7 +38,7 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsByPercentileFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime,
             [FromRoute] Percentile percentile)
         {
-            _logger.LogInformation("GetMetricsByPercentileFromAllCluster in HddMetricsControllerByAgent");
+            _logger.LogInformation($"на вход пришло {fromTime.ToString()} + {toTime.ToString()}");
             return Ok();
         }
 

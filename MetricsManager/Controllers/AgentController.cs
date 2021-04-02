@@ -21,21 +21,21 @@ namespace MetricsManager.Controllers
         [HttpPost("register")]
         public IActionResult RegistAgent([FromQuery] AgentInfo agentInfo)
         {
-            _logger.LogInformation("regist agent");
+            _logger.LogInformation($"на вход в пришло {agentInfo.AgentId} + {agentInfo.AgentAdress}");
             return Ok();
         }
         
         [HttpPut("enable/{agentId}")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
-            _logger.LogInformation("enable agent");
+            _logger.LogInformation($"на вход пришло {agentId}");
             return Ok();
         }
 
         [HttpPut("disable/{agentId}")]
         public IActionResult DisableAgentById([FromRoute] int agentId)
         {
-            _logger.LogInformation("disable agent");
+            _logger.LogInformation($"на вход пришло {agentId}");
             return Ok();
         }
 
