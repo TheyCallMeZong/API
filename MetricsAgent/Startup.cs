@@ -56,7 +56,7 @@ namespace MetricsAgent
             {
                 command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
                 command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
+                command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     value INT, time INT, percentile INT)";
                 command.ExecuteNonQuery();
             }
@@ -64,7 +64,7 @@ namespace MetricsAgent
             {
                 command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
                 command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY,
+                command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     value INT, time INT)";
                 command.ExecuteNonQuery();
             }
@@ -72,7 +72,7 @@ namespace MetricsAgent
             {
                 command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
                 command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY,
+                command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     value INT)";
                 command.ExecuteNonQuery();
             }
@@ -80,7 +80,7 @@ namespace MetricsAgent
             {
                 command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
                 command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY,
+                command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     value INT, time INT)";
                 command.ExecuteNonQuery();
             }
@@ -88,7 +88,7 @@ namespace MetricsAgent
             {
                 command.CommandText = "DROP TABLE IF EXISTS rammetrics";
                 command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY,
+                command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
                     value INT)";
                 command.ExecuteNonQuery();
             }

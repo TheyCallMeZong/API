@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace MetricsAgent.DB.IRepository
 {
@@ -6,9 +6,6 @@ namespace MetricsAgent.DB.IRepository
         where T : class
     {
         T GetById(int id);
-        IList<T> GetAll();
         void Create(T item);
-        void Update(T item);
-        void Delete(int id);
     }
 }

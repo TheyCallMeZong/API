@@ -31,36 +31,6 @@ namespace MetricsAgent.DB.IRepository
             command.ExecuteNonQuery();
         }
 
-        public void Delete(int id)
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "DELETE FROM cpumetrics WHERE id=@id";
-            cmd.Parameters.AddWithValue("@id", id);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
-        }
-
-        public IList<DotNetMetrics> GetAll()
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics";
-            var returnList = new List<DotNetMetrics>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    returnList.Add(new DotNetMetrics
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(0),
-                        FromTime = TimeSpan.FromSeconds(reader.GetInt32(0)),
-                        ToTime = TimeSpan.FromSeconds(reader.GetInt32(0))
-                    });
-                }
-            }
-            return returnList;
-        }
-
         public DotNetMetrics GetById(int id)
         {
             using var cmd = new SQLiteCommand(_connection);
@@ -82,19 +52,6 @@ namespace MetricsAgent.DB.IRepository
                     return null;
                 }
             }
-        }
-        public void Update(DotNetMetrics item)
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "UPDATE dotnetmetrics SET value = @value, fromtime = @fromtime, totime = @totime WHERE id=@id;";
-            cmd.Parameters.AddWithValue("@id", item.Id);
-            cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@fromtime", item.FromTime.TotalSeconds);
-            cmd.Parameters.AddWithValue("@totime", item.ToTime.TotalSeconds);
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
-
         }
     }
 }

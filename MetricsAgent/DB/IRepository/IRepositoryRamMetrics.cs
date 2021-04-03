@@ -30,35 +30,6 @@ namespace MetricsAgent.DB.IRepository
             command.ExecuteNonQuery();
         }
 
-
-        public void Delete(int id)
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "DELETE FROM RamMetrics WHERE id=@id";
-            cmd.Parameters.AddWithValue("@id", id);
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
-        }
-
-        public IList<RamMetrics> GetAll()
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "SELECT * FROM RamMetrics";
-            var returnList = new List<RamMetrics>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    returnList.Add(new RamMetrics
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(0),
-                    });
-                }
-            }
-            return returnList;
-        }
-
         public RamMetrics GetById(int id)
         {
             using var cmd = new SQLiteCommand(_connection);
@@ -78,17 +49,6 @@ namespace MetricsAgent.DB.IRepository
                     return null;
                 }
             }
-        }
-
-        public void Update(RamMetrics item)
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "UPDATE ramMmetrics SET value = @value WHERE id=@id;";
-            cmd.Parameters.AddWithValue("@id", item.Id);
-            cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
         }
     }
 }
