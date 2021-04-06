@@ -5,7 +5,7 @@ namespace MetricsAgent.Interface
     public interface IRepository<T> 
         where T : class
     {
-        T GetById(int id);
+        int GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime);
         void Create(T item);
     }
 }

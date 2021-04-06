@@ -24,25 +24,14 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime} + {percentile}");
-            _repositoryCpuMetrics.Create(new CpuMetrics
-            {
-                FromTime = fromTime,
-                ToTime = toTime,
-                Percentile = percentile
-            });
-            return Ok();
+            return Ok(_repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime));
         }
 
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            _repositoryCpuMetrics.Create(new CpuMetrics
-            {
-                FromTime = fromTime,
-                ToTime = toTime
-            });
-            return Ok();
+            return Ok(_repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime));
         }
     }
 }

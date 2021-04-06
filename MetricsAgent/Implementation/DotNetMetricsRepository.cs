@@ -1,54 +1,37 @@
 ﻿using MetricsAgent.Data;
 using MetricsAgent.Interface;
 using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Threading.Tasks;
+using Dapper;
 
 namespace MetricsAgent.Implementation
 {
     public class DotNetMetricsRepository : IRepositoryDotNetMetrics
     {
-        private SQLiteConnection _connection;
-        public DotNetMetricsRepository(SQLiteConnection connection)
-        {
-            _connection = connection;
-        }
+        private const string _connection = @"Data Source= cpumetrics; Version=3;Pooling=True;Max Pool Size=100;";
         public void Create(DotNetMetrics item)
         {
-            using var command = new SQLiteCommand(_connection);
-            command.CommandText = @"INSERT INTO dotnetmetrics (value, fromtime, totime) VALUES (@value, @fromtime, @totime)";
-
-            command.Parameters.AddWithValue("@value", item.Value);
-            command.Parameters.AddWithValue("@fromtime", item.FromTime.TotalSeconds);
-            command.Parameters.AddWithValue("@totime", item.ToTime.TotalSeconds);
-
-            command.Prepare();
-            command.ExecuteNonQuery();
+            using (var connection = new SQLiteConnection(_connection))
+            {
+                connection.Execute("insert into dotnetmetrics (value, fromtime, totime) VALUES (@value, @fromtime, @totime)", 
+                    new { 
+                    value = item.Value,
+                    fromtime = item.FromTime.TotalSeconds,
+                    totime = item.ToTime.TotalSeconds
+                });
+            };
         }
 
-        public DotNetMetrics GetById(int id)
+        public int GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE id=@id";
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(_connection))
             {
-                if (reader.Read())
-                {
-                    return new DotNetMetrics
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(0),
-                        FromTime = TimeSpan.FromSeconds(reader.GetInt32(0)),
-                        ToTime = TimeSpan.FromSeconds(reader.GetInt32(0))
-                    };
-                }
-                else
-                {
-                    return null;
-                }
-            }
+                return connection.QuerySingle<int>("select value from dotnetmetrics where fromtime = @fromtime and totime =@totime",
+                    new {
+                        fromtime = fromTime.TotalSeconds,
+                        toTime = toTime.TotalSeconds
+                    });
+            };
         }
     }
 }
