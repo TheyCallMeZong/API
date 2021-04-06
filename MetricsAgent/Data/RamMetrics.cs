@@ -1,4 +1,4 @@
-﻿namespace MetricsAgent.DB.Data
+﻿namespace MetricsAgent.Data
 {
     public class RamMetrics
     {

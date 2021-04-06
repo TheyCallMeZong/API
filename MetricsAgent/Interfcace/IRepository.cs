@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MetricsAgent.DB.IRepository
+namespace MetricsAgent.Interface
 {
     public interface IRepository<T> 
         where T : class

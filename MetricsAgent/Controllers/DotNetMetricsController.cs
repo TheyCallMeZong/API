@@ -1,11 +1,7 @@
-﻿using MetricsAgent.DB.IRepository;
-using Microsoft.AspNetCore.Http;
+﻿using MetricsAgent.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -24,7 +20,7 @@ namespace MetricsManager.Controllers
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
         public IActionResult GetErrors([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _repository.Create(new MetricsAgent.DB.Data.DotNetMetrics
+            _repository.Create(new MetricsAgent.Data.DotNetMetrics
             {
                 FromTime = fromTime,
                 ToTime = toTime

@@ -1,11 +1,7 @@
-﻿using MetricsAgent.DB.IRepository;
-using Microsoft.AspNetCore.Http;
+﻿using MetricsAgent.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -24,7 +20,7 @@ namespace MetricsManager.Controllers
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, TimeSpan toTime)
         {
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            _repository.Create(new MetricsAgent.DB.Data.NetWorkMetrics
+            _repository.Create(new MetricsAgent.Data.NetWorkMetrics
             {
                 FromTime = fromTime,
                 ToTime = toTime
