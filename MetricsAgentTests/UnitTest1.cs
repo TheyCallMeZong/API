@@ -5,9 +5,9 @@ using System;
 using Xunit;
 using MetricsCommon;
 using Moq;
-using MetricsAgent.DB.IRepository;
 using Microsoft.Extensions.Logging;
-using MetricsAgent.DB.Data;
+using MetricsAgent.Interface;
+using MetricsAgent.Data;
 
 namespace MetricsManagerTests
 {

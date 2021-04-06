@@ -1,11 +1,6 @@
-﻿using MetricsAgent.DB.IRepository;
-using Microsoft.AspNetCore.Http;
+﻿using MetricsAgent.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Controllers
 {
@@ -25,7 +20,7 @@ namespace MetricsManager.Controllers
         public IActionResult GetFreeSpaceSize()
         {
             _logger.LogInformation("GetFreeSpaceSize in RamMetricsController");
-            _repository.Create(new MetricsAgent.DB.Data.RamMetrics
+            _repository.Create(new MetricsAgent.Data.RamMetrics
             {
             });
             return Ok();

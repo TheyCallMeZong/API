@@ -2,8 +2,8 @@
 using System;
 using MetricsCommon;
 using Microsoft.Extensions.Logging;
-using MetricsAgent.DB.IRepository;
-using MetricsAgent.DB.Data;
+using MetricsAgent.Interface;
+using MetricsAgent.Data;
 
 namespace MetricsManager.Controllers
 {

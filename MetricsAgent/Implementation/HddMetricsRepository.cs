@@ -1,17 +1,13 @@
-﻿using MetricsAgent.DB.Data;
+﻿using MetricsAgent.Data;
+using MetricsAgent.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.DB.IRepository
+namespace MetricsAgent.Implementation
 {
-    public interface IRepositoryHddMetrics 
-        : IRepository<HddMetrics>
-    {
-    }
-
     public class HddMetricsRepository : IRepositoryHddMetrics
     {
         private SQLiteConnection _connection;

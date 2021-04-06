@@ -1,4 +1,4 @@
-﻿using MetricsAgent.DB.IRepository;
+﻿using MetricsAgent.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +20,7 @@ namespace MetricsManager.Controllers
         public IActionResult GetFreeSpaceSize()
         {
             _logger.LogInformation("GetFreeSpaceSize in HddMetricsController");
-            _repository.Create(new MetricsAgent.DB.Data.HddMetrics
+            _repository.Create(new MetricsAgent.Data.HddMetrics
             {
             });
             return Ok();
