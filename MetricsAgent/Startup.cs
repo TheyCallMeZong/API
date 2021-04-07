@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Mapper;
 
 namespace MetricsAgent
 {
@@ -28,6 +30,11 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
             });
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new CpuAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new DotNetAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new HddMetricsMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new NetWorkAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new RamAutoMapper())).CreateMapper());
             SQLConnection(services);
             services.AddSingleton<IRepositoryCpuMetrics, CpuMetricsRepository>();
             services.AddSingleton<IRepositoryDotNetMetrics, DotNetMetricsRepository>();

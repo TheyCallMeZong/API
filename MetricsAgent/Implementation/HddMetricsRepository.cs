@@ -22,11 +22,11 @@ namespace MetricsAgent.Implementation
                     });
             };
         }
-        public int GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public HddMetrics GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using (var connection = new SQLiteConnection(_connection))
             {
-                return connection.QuerySingle<int>("select * from hddmetrics where fromtime =@fromtime and totime =@totime",
+                return connection.QuerySingle<HddMetrics>("select * from hddmetrics where fromtime =@fromtime and totime =@totime",
                     new 
                     {
                         fromtime = fromTime.TotalSeconds,

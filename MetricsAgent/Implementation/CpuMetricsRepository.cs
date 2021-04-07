@@ -22,12 +22,12 @@ namespace MetricsAgent.Implementation
                     });
             };
         }
-        public int GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public CpuMetrics GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
 
             using (var connection = new SQLiteConnection(_connection))
             {
-                return connection.QuerySingle<int>("SELECT value FROM cpumetrics WHERE fromtime = @fromtime and totime =@totime",
+                return connection.QuerySingle<CpuMetrics>("SELECT * FROM cpumetrics WHERE fromtime = @fromtime and totime =@totime",
                     new
                     {
                         fromtime = fromTime.TotalSeconds,

@@ -23,11 +23,11 @@ namespace MetricsAgent.Implementation
             };
         }
 
-        public int GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        public RamMetrics GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using (var connection = new SQLiteConnection(_connection))
             {
-                return connection.QuerySingle<int>("select value from rammetrics where fromtime = @fromtime and totime =@totime",
+                return connection.QuerySingle<RamMetrics>("select * from rammetrics where fromtime = @fromtime and totime =@totime",
                     new
                     {
                         fromtime = fromTime.TotalSeconds,
