@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 
 namespace MetricsAgent.Data
 {
-    public class HddMetrics
+    public class DotNetMetricsDto
     {
         public int Id { get; set; }
         public int Value { get; set; }

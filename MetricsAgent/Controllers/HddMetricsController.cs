@@ -1,4 +1,6 @@
-﻿using MetricsAgent.Interface;
+﻿using AutoMapper;
+using MetricsAgent.Data;
+using MetricsAgent.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,20 +11,22 @@ namespace MetricsManager.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
+
         private IRepositoryHddMetrics _repository;
-        public HddMetricsController(ILogger<HddMetricsController> logger, IRepositoryHddMetrics repository)
+
+        private IMapper _mapper;
+        public HddMetricsController(ILogger<HddMetricsController> logger, IRepositoryHddMetrics repository, IMapper mapper)
         {
             _logger = logger;
             _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("left")]
         public IActionResult GetFreeSpaceSize()
         {
             _logger.LogInformation("GetFreeSpaceSize in HddMetricsController");
-            _repository.Create(new MetricsAgent.Data.HddMetrics
-            {
-            });
+
             return Ok();
         }
     }

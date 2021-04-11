@@ -1,4 +1,7 @@
-﻿using MetricsAgent.Interface;
+﻿using AutoMapper;
+using MetricsAgent.Data;
+using MetricsAgent.Interface;
+using MetricsAgent.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,21 +14,24 @@ namespace MetricsManager.Controllers
     {
         private IRepositoryNetWorkMetrics _repository;
         private readonly ILogger<NetWorkMetricsController> _logger;
-        public NetWorkMetricsController(ILogger<NetWorkMetricsController> logger, IRepositoryNetWorkMetrics repository)
+        private IMapper _mapper;
+        public NetWorkMetricsController(ILogger<NetWorkMetricsController> logger, IRepositoryNetWorkMetrics repository, IMapper mapper)
         {
             _logger = logger;
             _repository = repository;
+            _mapper = mapper;
         }
         [HttpGet("from/{fromTime}/to/{toTime}/")]
         public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, TimeSpan toTime)
         {
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            _repository.Create(new MetricsAgent.Data.NetWorkMetrics
+            NetWorkMetrics netWork = _repository.GetByTimePeriod(fromTime, toTime);
+            var response = new AllNetWorkMetricsResponse()
             {
-                FromTime = fromTime,
-                ToTime = toTime
-            });
-            return Ok();
+                Metrics = new System.Collections.Generic.List<NetWorkMetricsDto>()
+            };
+            response.Metrics.Add(_mapper.Map<NetWorkMetricsDto>(netWork));
+            return Ok(response);
         }  
     }
 }

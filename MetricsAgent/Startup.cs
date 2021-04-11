@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Mapper;
 
 namespace MetricsAgent
 {
@@ -28,12 +30,17 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
             });
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new CpuAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new DotNetAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new HddMetricsMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new NetWorkAutoMapper())).CreateMapper());
+            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new RamAutoMapper())).CreateMapper());
             SQLConnection(services);
-            services.AddScoped<IRepositoryCpuMetrics, CpuMetricsRepository>();
-            services.AddScoped<IRepositoryDotNetMetrics, DotNetMetricsRepository>();
-            services.AddScoped<IRepositoryHddMetrics, HddMetricsRepository>();
-            services.AddScoped<IRepositoryNetWorkMetrics, NetWorkRepository>();
-            services.AddScoped<IRepositoryRamMetrics,RamMetricsRepository>();
+            services.AddSingleton<IRepositoryCpuMetrics, CpuMetricsRepository>();
+            services.AddSingleton<IRepositoryDotNetMetrics, DotNetMetricsRepository>();
+            services.AddSingleton<IRepositoryHddMetrics, HddMetricsRepository>();
+            services.AddSingleton<IRepositoryNetWorkMetrics, NetWorkRepository>();
+            services.AddSingleton<IRepositoryRamMetrics, RamMetricsRepository>();
         }
 
         private void SQLConnection(IServiceCollection services)
@@ -51,7 +58,7 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, time INT, percentile INT)";
+                    value INT, fromtime INT, totime INT, percentile INT)";
                 command.ExecuteNonQuery();
             }
             using (var command = new SQLiteCommand(connection))
@@ -59,7 +66,7 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, time INT)";
+                    value INT, fromtime INT, totime INT)";
                 command.ExecuteNonQuery();
             }
             using (var command = new SQLiteCommand(connection))
@@ -67,7 +74,7 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT)";
+                    value INT, fromtime INT, totime INT)";
                 command.ExecuteNonQuery();
             }
             using (var command = new SQLiteCommand(connection))
@@ -75,7 +82,7 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, time INT)";
+                    value INT, fromtime INT, totime INT)";
                 command.ExecuteNonQuery();
             }
             using (var command = new SQLiteCommand(connection))
@@ -83,7 +90,7 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS rammetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT)";
+                    value INT, fromtime INT, totime INT)";
                 command.ExecuteNonQuery();
             }
         }

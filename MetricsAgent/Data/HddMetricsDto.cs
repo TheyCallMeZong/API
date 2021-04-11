@@ -3,7 +3,7 @@ using System;
 
 namespace MetricsAgent.Data
 {
-    public class HddMetrics
+    public class HddMetricsDto
     {
         public int Id { get; set; }
         public int Value { get; set; }

@@ -1,53 +1,37 @@
 ﻿using MetricsAgent.Data;
 using MetricsAgent.Interface;
 using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Threading.Tasks;
+using Dapper;
 
 namespace MetricsAgent.Implementation
 {
     public class NetWorkRepository : IRepositoryNetWorkMetrics
     {
-        private SQLiteConnection _connection;
-        public NetWorkRepository(SQLiteConnection connection)
-        {
-            _connection = connection;
-        }
+        private const string _connection = @"Data Source= cpumetrics; Version=3;Pooling=True;Max Pool Size=100;";
         public void Create(NetWorkMetrics item)
         {
-            using var command = new SQLiteCommand(_connection);
-            command.CommandText = @"INSERT INTO hddmetics (value, fromtime, totime) VALUES (@value, @fromtime, @totime)";
-
-            command.Parameters.AddWithValue("@value", item.Value);
-            command.Parameters.AddWithValue("@fromtime", item.FromTime);
-            command.Parameters.AddWithValue("@totime", item.ToTime);
-
-            command.Prepare();
-            command.ExecuteNonQuery();
-        }
-        public NetWorkMetrics GetById(int id)
-        {
-            using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "SELECT * FROM networkmetrics WHERE id=@id";
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(_connection))
             {
-                if (reader.Read())
-                {
-                    return new NetWorkMetrics
+                connection.Execute("insert into networkmetrics value, fromtime, totime) values (@value, @fromtime, @totime)", 
+                    new { 
+                        value = item.Value,
+                        fromtime = item.FromTime.TotalSeconds,
+                        totime = item.ToTime.TotalSeconds
+                    });
+            };
+        }
+        public NetWorkMetrics GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
+        {
+            using (var connection = new SQLiteConnection(_connection))
+            {
+                return connection.QuerySingle<NetWorkMetrics>("select * from networkmetrics where fromtime = @fromtime and totime =@totime",
+                    new
                     {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(0),
-                        FromTime = TimeSpan.FromSeconds(reader.GetInt32(0)),
-                        ToTime = TimeSpan.FromSeconds(reader.GetInt32(0))
-                    };
-                }
-                else
-                {
-                    return null;
-                }
-            }
+                        fromtime = fromTime.TotalSeconds,
+                        totime = toTime.TotalSeconds
+                    });
+            };
         }
     }
 }
