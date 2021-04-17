@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MetricsAgent.Data;
 using MetricsAgent.Interface;
+using MetricsAgent.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace MetricsManager.Controllers
 {
@@ -27,7 +29,16 @@ namespace MetricsManager.Controllers
         {
             _logger.LogInformation("GetFreeSpaceSize in HddMetricsController");
 
-            return Ok();
+            var result = _repository.GetAll();
+
+            var response = new AllHddResponse()
+            {
+                Metrics = new List<HddMetricDto>()
+            };
+
+            foreach (var e in result)
+                response.Metrics.Add(_mapper.Map<HddMetricDto>(e));
+            return Ok(response);
         }
     }
 }

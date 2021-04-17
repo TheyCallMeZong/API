@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using MetricsAgent.Data;
 using MetricsAgent.Interface;
-using MetricsAgent.Responses;
+using MetricsAgent.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace MetricsManager.Controllers
 {
@@ -25,16 +25,23 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetErrors([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        public IActionResult GetErrors([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            DotNetMetrics dotNetMetrics = _repository.GetByTimePeriod(fromTime, toTime);
-            var response = new AllDotNetMetricsResponse()
-            {
-                Metrics = new System.Collections.Generic.List<DotNetMetricsDto>()
-            };
-            response.Metrics.Add(_mapper.Map<DotNetMetricsDto>(dotNetMetrics));
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            return Ok();
+
+            var result = _repository.GetByTimePeriod(fromTime, toTime);
+
+            var response = new AllDotNetResponse()
+            {
+                Metrics = new List<DotNetMetricDto>()
+            };
+
+            foreach (var metric in result)
+            {
+                response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
+            }
+
+            return Ok(response);
         }
     }
 }

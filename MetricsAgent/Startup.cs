@@ -9,6 +9,13 @@ using Microsoft.OpenApi.Models;
 using System.Data.SQLite;
 using AutoMapper;
 using MetricsAgent.Mapper;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL;
+using FluentMigrator.Runner;
+using Quartz.Spi;
+using MetricsAgent.Jobs;
+using Quartz;
+using Quartz.Impl;
 
 namespace MetricsAgent
 {
@@ -30,73 +37,48 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
             });
-            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new CpuAutoMapper())).CreateMapper());
-            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new DotNetAutoMapper())).CreateMapper());
-            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new HddMetricsMapper())).CreateMapper());
-            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new NetWorkAutoMapper())).CreateMapper());
-            services.AddSingleton(new MapperConfiguration(mp => mp.AddProfile(new RamAutoMapper())).CreateMapper());
-            SQLConnection(services);
+
+            services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
+
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddSingleton<IRepositoryCpuMetrics, CpuMetricsRepository>();
             services.AddSingleton<IRepositoryDotNetMetrics, DotNetMetricsRepository>();
             services.AddSingleton<IRepositoryHddMetrics, HddMetricsRepository>();
             services.AddSingleton<IRepositoryNetWorkMetrics, NetWorkRepository>();
             services.AddSingleton<IRepositoryRamMetrics, RamMetricsRepository>();
+
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(mig => 
+                mig.AddSQLite()
+                .WithGlobalConnectionString(new SqlSettingsProvider().GetConnectionString())
+                .ScanIn(typeof(Startup).Assembly).For.Migrations()
+                ).AddLogging(lb => lb
+                    .AddFluentMigratorConsole());
+
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            services.AddSingleton<CpuMetricsJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(CpuMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(DotNetMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(NetWorkMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(HddMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(RamMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
         }
 
-        private void SQLConnection(IServiceCollection services)
-        {
-            string connectionString = "Data Source=:memory:";
-            var connection = new SQLiteConnection(connectionString);
-            connection.Open();
-            PrepareSchema(connection);
-            services.AddSingleton(connection);
-        }
-        private void PrepareSchema(SQLiteConnection connection)
-        {
-            using (var command = new SQLiteCommand(connection))
-            {
-                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-                command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, fromtime INT, totime INT, percentile INT)";
-                command.ExecuteNonQuery();
-            }
-            using (var command = new SQLiteCommand(connection))
-            {
-                command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, fromtime INT, totime INT)";
-                command.ExecuteNonQuery();
-            }
-            using (var command = new SQLiteCommand(connection))
-            {
-                command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, fromtime INT, totime INT)";
-                command.ExecuteNonQuery();
-            }
-            using (var command = new SQLiteCommand(connection))
-            {
-                command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, fromtime INT, totime INT)";
-                command.ExecuteNonQuery();
-            }
-            using (var command = new SQLiteCommand(connection))
-            {
-                command.CommandText = "DROP TABLE IF EXISTS rammetrics";
-                command.ExecuteNonQuery();
-                command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                    value INT, fromtime INT, totime INT)";
-                command.ExecuteNonQuery();
-            }
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -115,6 +97,8 @@ namespace MetricsAgent
             {
                 endpoints.MapControllers();
             });
+
+            migrationRunner.MigrateUp();
         }
     }
 }

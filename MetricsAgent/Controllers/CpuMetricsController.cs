@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 using MetricsAgent.Interface;
 using AutoMapper;
 using MetricsAgent.Data;
-using MetricsAgent.Responses;
+using System.Collections.Generic;
+using MetricsAgent.Requests;
 
 namespace MetricsManager.Controllers
 {
@@ -25,30 +26,71 @@ namespace MetricsManager.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
+        /// <summary>
+        /// Получение всех CPU метрик 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getall")]
+        public IActionResult GetAll()
         {
-            _logger.LogInformation($"на вход пришло {fromTime} + {toTime} + {percentile}");
-            CpuMetrics cpumetric = _repositoryCpuMetrics.GetByTimePeriod(fromTime,toTime);
-            var response = new AllCpuMetricsResponse() 
-            {
-                Metrics = new System.Collections.Generic.List<CpuMetricsDto>()
-            };
-            response.Metrics.Add(_mapper.Map<CpuMetricsDto>(cpumetric));
-            return Ok(response);
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            CpuMetrics cpumetric = _repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime);
+            IList<CpuMetrics> metrics = _repositoryCpuMetrics.GetAll();
             var response = new AllCpuMetricsResponse()
             {
-                Metrics = new System.Collections.Generic.List<CpuMetricsDto>()
+                Metrics = new List<CpuMetrcisDto>()
             };
-            response.Metrics.Add(_mapper.Map<CpuMetricsDto>(cpumetric));
-            return Ok(_repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime));
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<CpuMetrcisDto>(metric));
+            }
+
+            _logger.LogInformation($"Запрос всех метрик Cpu");
+
+            return Ok(response);
+        }
+        /// <summary>
+        /// Собирать метрики в определенном диапозоне
+        /// </summary>
+        /// <param name="fromTime">начальное время</param>
+        /// <param name="toTime">конечное время</param>
+        /// <param name="percentile">не знаю зачем это нужно</param>
+        /// <returns></returns>
+        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
+        public IActionResult GetMetricsByPercentile([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime, [FromRoute] Percentile percentile)
+        {
+            _logger.LogInformation($"На выход пришло {fromTime} - {toTime}");
+            IList<CpuMetrics> metrcis = _repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime);
+            var response = new AllCpuMetricsResponse()
+            {
+                Metrics = new List<CpuMetrcisDto>()
+            };
+            foreach (var e in metrcis)
+            {
+                response.Metrics.Add(_mapper.Map<CpuMetrcisDto>(e));
+            }
+
+            return Ok(response);
+        }
+        /// <summary>
+        /// Собирать метрики в определенном диапозоне
+        /// </summary>
+        /// <param name="fromTime">начальное время</param>
+        /// <param name="toTime">конечное время.</param>
+        /// <returns></returns>
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
+            IList<CpuMetrics> metrcis = _repositoryCpuMetrics.GetByTimePeriod(fromTime, toTime);
+            var response = new AllCpuMetricsResponse()
+            {
+                Metrics = new List<CpuMetrcisDto>()
+            };
+            foreach (var e in metrcis)
+            {
+                response.Metrics.Add(_mapper.Map<CpuMetrcisDto>(e));
+            }
+            return Ok(response);
         }
     }
 }

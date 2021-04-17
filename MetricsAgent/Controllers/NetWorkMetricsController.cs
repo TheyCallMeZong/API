@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using MetricsAgent.Data;
+using MetricsAgent.Implementation;
 using MetricsAgent.Interface;
-using MetricsAgent.Responses;
+using MetricsAgent.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace MetricsManager.Controllers
 {
@@ -22,15 +24,20 @@ namespace MetricsManager.Controllers
             _mapper = mapper;
         }
         [HttpGet("from/{fromTime}/to/{toTime}/")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime, TimeSpan toTime)
+        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             _logger.LogInformation($"на вход пришло {fromTime} + {toTime}");
-            NetWorkMetrics netWork = _repository.GetByTimePeriod(fromTime, toTime);
-            var response = new AllNetWorkMetricsResponse()
+
+            var result = _repository.GetByTimePeriod(fromTime, toTime);
+
+            var response = new AllnetWorkResponse()
             {
-                Metrics = new System.Collections.Generic.List<NetWorkMetricsDto>()
+                Metrics = new List<NetWorkMetricDto>()
             };
-            response.Metrics.Add(_mapper.Map<NetWorkMetricsDto>(netWork));
+
+            foreach (var e in result)
+                response.Metrics.Add(_mapper.Map<NetWorkMetricDto>(e));
+
             return Ok(response);
         }  
     }
