@@ -29,20 +29,18 @@ namespace MetricsManager.Controllers
         /// <summary>
         /// Получение всех CPU метрик 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Все метрики</returns>
         [HttpGet("getall")]
         public IActionResult GetAll()
         {
-            IList<CpuMetrics> metrics = _repositoryCpuMetrics.GetAll();
+            var metrics = _repositoryCpuMetrics.GetAll();
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetrcisDto>()
             };
 
             foreach (var metric in metrics)
-            {
                 response.Metrics.Add(_mapper.Map<CpuMetrcisDto>(metric));
-            }
 
             _logger.LogInformation($"Запрос всех метрик Cpu");
 
@@ -53,7 +51,7 @@ namespace MetricsManager.Controllers
         /// </summary>
         /// <param name="fromTime">начальное время</param>
         /// <param name="toTime">конечное время</param>
-        /// <param name="percentile">не знаю зачем это нужно</param>
+        /// <param name="percentile"></param>
         /// <returns></returns>
         [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
         public IActionResult GetMetricsByPercentile([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime, [FromRoute] Percentile percentile)

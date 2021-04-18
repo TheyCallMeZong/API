@@ -6,6 +6,7 @@ using Dapper;
 using System.Collections.Generic;
 using MetricsAgent.DAL.Interfaces;
 using System.Linq;
+using MetricsAgent.DAL;
 
 namespace MetricsAgent.Implementation
 {
@@ -16,6 +17,7 @@ namespace MetricsAgent.Implementation
         public HddMetricsRepository(ISqlSettingsProvider sqlSettingsProvider)
         {
             this.sqlSettingsProvider = sqlSettingsProvider;
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(HddMetrics item)
         {

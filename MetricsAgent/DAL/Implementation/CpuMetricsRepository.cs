@@ -23,15 +23,14 @@ namespace MetricsAgent.Implementation
         }
         public void Create(CpuMetrics item)
         {
-            using (var connection = new SQLiteConnection(_provider.GetConnectionString()))
-            {
-                connection.Execute("INSERT INTO cpumetrics(value, time) VALUES (@value, time)",
-                    new
-                    {
-                        value = item.Value,
-                        fromtime = item.Time.ToUnixTimeSeconds()
-                    });
-            };
+            using var connection = new SQLiteConnection(_provider.GetConnectionString());
+            connection.Execute("INSERT INTO cpumetrics (value, time) VALUES (@value, @time)",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time.ToUnixTimeSeconds()
+                });
+
         }
         public IList<CpuMetrics> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {

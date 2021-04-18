@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MetricsAgent.Data;
+using System.Runtime.Versioning;
 
 namespace MetricsAgent.Jobs
 {
@@ -16,6 +17,7 @@ namespace MetricsAgent.Jobs
         private readonly IRepositoryHddMetrics _repository;
         private readonly PerformanceCounter _counter;
 
+        [SupportedOSPlatform("windows")]
         public HddMetricsJob(IServiceProvider provider)
         {
             _provider = provider;
@@ -23,9 +25,10 @@ namespace MetricsAgent.Jobs
             _counter = new PerformanceCounter("LogicalDisk", "Free Megabytes", "C:");
         }
 
+        [SupportedOSPlatform("windows")]
         public Task Execute(IJobExecutionContext context)
         {
-            double hddFreeSpace = _counter.NextValue() / 1024 / 1024;
+            double hddFreeSpace = _counter.NextValue();
             var time = DateTimeOffset.UtcNow;
             _repository.Create(new HddMetrics()
             {
