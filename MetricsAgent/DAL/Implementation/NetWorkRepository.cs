@@ -6,6 +6,7 @@ using Dapper;
 using System.Collections.Generic;
 using MetricsAgent.DAL.Interfaces;
 using System.Linq;
+using MetricsAgent.DAL;
 
 namespace MetricsAgent.Implementation
 {
@@ -16,12 +17,13 @@ namespace MetricsAgent.Implementation
         public NetWorkRepository(ISqlSettingsProvider provider)
         {
             _provider = provider;
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(NetWorkMetrics item)
         {
             using (var connection = new SQLiteConnection(_provider.GetConnectionString()))
             {
-                connection.Execute("insert into networkmetrics value, time) values (@value, @time)", 
+                connection.Execute("insert into networkmetrics (value, time) values (@value, @time)", 
                     new { 
                         value = item.Value,
                         time = item.Time.ToUnixTimeSeconds()

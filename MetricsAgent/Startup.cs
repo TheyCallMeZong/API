@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System.Data.SQLite;
 using AutoMapper;
 using MetricsAgent.Mapper;
 using MetricsAgent.DAL.Interfaces;
@@ -28,7 +27,6 @@ namespace MetricsAgent
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -64,18 +62,23 @@ namespace MetricsAgent
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(CpuMetricsJob),
                 cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(DotNetMetricsJob),
-                cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(NetWorkMetricsJob),
-                cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton(new JobSchedule(
-                jobType: typeof(HddMetricsJob),
-                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<RamMetricsJob>();
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(RamMetricsJob),
                 cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<HddMetricsJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(HddMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<DotNetMetricsJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(DotNetMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<NetWorkMetricsJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(NetWorkMetricsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddHostedService<QuartzHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)

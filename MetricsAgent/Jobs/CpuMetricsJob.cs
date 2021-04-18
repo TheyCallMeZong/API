@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using System;
 using System.Diagnostics;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 
 namespace MetricsAgent.Jobs
@@ -13,6 +14,7 @@ namespace MetricsAgent.Jobs
         private readonly IRepositoryCpuMetrics _repository;
         private readonly PerformanceCounter performanceCounter;
 
+        [SupportedOSPlatform("windows")]
         public CpuMetricsJob(IServiceProvider provider)
         {
             _repository = provider.GetService<IRepositoryCpuMetrics>();
@@ -21,7 +23,11 @@ namespace MetricsAgent.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            var cpuUsageInPercents = Convert.ToInt32(performanceCounter.NextValue());
+            int cpuUsageInPercents = 0;
+            if (OperatingSystem.IsWindows())
+            {
+                cpuUsageInPercents = Convert.ToInt32(performanceCounter.NextValue());
+            }
             var time = DateTimeOffset.UtcNow;
             _repository.Create(new CpuMetrics()
             {

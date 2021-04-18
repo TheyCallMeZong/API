@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using MetricsAgent.Data;
+using System.Runtime.Versioning;
 
 namespace MetricsAgent.Jobs
 {
@@ -16,13 +17,14 @@ namespace MetricsAgent.Jobs
         private readonly IRepositoryDotNetMetrics _repository;
         private readonly PerformanceCounter _counter;
 
+        [SupportedOSPlatform("windows")]
         public DotNetMetricsJob(IServiceProvider provider)
         {
             _provider = provider;
             _repository = _provider.GetService<IRepositoryDotNetMetrics>();
             _counter = new PerformanceCounter(".NET CLR Memory", "# Bytes in all Heaps", "_Global_");
         }
-
+        [SupportedOSPlatform("windows")]
         public Task Execute(IJobExecutionContext context)
         {
             int value = Convert.ToInt32(_counter.NextValue());

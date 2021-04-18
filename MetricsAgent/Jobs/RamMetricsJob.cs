@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using MetricsAgent.Data;
+using System.Runtime.Versioning;
 
 namespace MetricsAgent.Jobs
 {
@@ -16,6 +17,7 @@ namespace MetricsAgent.Jobs
         private readonly IRepositoryRamMetrics _repository;
         private readonly PerformanceCounter _counter;
 
+        [SupportedOSPlatform("windows")]
         public RamMetricsJob(IServiceProvider provider)
         {
             _provider = provider;
@@ -23,6 +25,7 @@ namespace MetricsAgent.Jobs
             _counter = new PerformanceCounter("Memory", "Available MBytes");
         }
 
+        [SupportedOSPlatform("windows")]
         public Task Execute(IJobExecutionContext context)
         {
             double ramAvailable = Convert.ToInt32(_counter.NextValue());

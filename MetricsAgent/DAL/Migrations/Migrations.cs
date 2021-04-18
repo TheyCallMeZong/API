@@ -9,25 +9,25 @@ namespace MetricsAgent.DAL.Migrations
         public override void Up()
         {
             Create.Table("cpumetrics")
-                .WithColumn("id").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("value").AsInt32().NotNullable()
-                .WithColumn("time").AsInt32().NotNullable();
+                .WithColumn("id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("value").AsInt64()
+                .WithColumn("time").AsInt64();
             Create.Table("dotnetmetrics")
-               .WithColumn("id").AsInt32().NotNullable().PrimaryKey().Identity()
-               .WithColumn("value").AsInt32().NotNullable()
-               .WithColumn("time").AsInt32().NotNullable(); 
+               .WithColumn("id").AsInt64().PrimaryKey().Identity()
+               .WithColumn("value").AsInt64()
+               .WithColumn("time").AsInt64(); 
             Create.Table("hddmetrics")
-                .WithColumn("id").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("freesize").AsInt32().NotNullable()
-                .WithColumn("time").AsInt32().NotNullable(); 
+                .WithColumn("id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("freesize").AsInt64()
+                .WithColumn("time").AsInt64(); 
             Create.Table("networkmetrics")
-                .WithColumn("id").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("value").AsInt32().NotNullable()
-                .WithColumn("time").AsInt32().NotNullable(); 
-            Create.Table("rametics")
-                .WithColumn("id").AsInt32().NotNullable().PrimaryKey().Identity()
-                .WithColumn("available").AsInt32().NotNullable()
-                .WithColumn("time").AsInt32().NotNullable();
+                .WithColumn("id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("value").AsInt64()
+                .WithColumn("time").AsInt64(); 
+            Create.Table("rammetrics")
+                .WithColumn("id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("available").AsInt64()
+                .WithColumn("time").AsInt64();
         }
 
         public override void Down()

@@ -6,6 +6,7 @@ using Dapper;
 using System.Collections.Generic;
 using MetricsAgent.DAL.Interfaces;
 using System.Linq;
+using MetricsAgent.DAL;
 
 namespace MetricsAgent.Implementation
 {
@@ -17,18 +18,18 @@ namespace MetricsAgent.Implementation
         public DotNetMetricsRepository(ISqlSettingsProvider _provider)
         {
             this._provider = _provider;
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(DotNetMetrics item)
         {
             using (var connection = new SQLiteConnection(_provider.GetConnectionString()))
             {
-                connection.Execute("INSERT INTO dotnetmetrics(id, value, time) VALUES (@value, @time)",
+                connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES (@value, @time)",
                     new
                     {
                         value = item.Value,
                         time = item.Time.ToUnixTimeSeconds()
                     });
-
             };
         }
 

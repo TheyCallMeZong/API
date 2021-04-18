@@ -6,6 +6,7 @@ using Dapper;
 using MetricsAgent.DAL.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using MetricsAgent.DAL;
 
 namespace MetricsAgent.Implementation
 {
@@ -16,6 +17,7 @@ namespace MetricsAgent.Implementation
         public RamMetricsRepository(ISqlSettingsProvider provider)
         {
             _provider = provider;
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
 
         public void Create(RamMetrics item)
