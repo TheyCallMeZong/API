@@ -15,6 +15,7 @@ using Quartz.Spi;
 using MetricsAgent.Jobs;
 using Quartz;
 using Quartz.Impl;
+using System;
 
 namespace MetricsAgent
 {
@@ -33,7 +34,17 @@ namespace MetricsAgent
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Ќу это самое короче да",
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Email = "savhenko10@mail.ru",
+                        Name = "Semyon"
+                    }, 
+                    Description = "Ќу если шо то можно загруженность вашего прибора посмареть"
+                });
             });
 
             services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
@@ -87,7 +98,7 @@ namespace MetricsAgent
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsAgent v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsAgent"));
             }
 
             app.UseHttpsRedirection();

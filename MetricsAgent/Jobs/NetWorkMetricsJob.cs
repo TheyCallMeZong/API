@@ -15,7 +15,6 @@ namespace MetricsAgent.Jobs
     {
         private readonly IServiceProvider _provider;
         private readonly IRepositoryNetWorkMetrics _repository;
-        private readonly PerformanceCounter _counter;
 
         [SupportedOSPlatform("windows")]
         public NetWorkMetricsJob(IServiceProvider provider)

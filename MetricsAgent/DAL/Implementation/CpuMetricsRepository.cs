@@ -4,7 +4,6 @@ using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Data;
 using MetricsAgent.Interface;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;

@@ -29,7 +29,6 @@ namespace MetricsManager
             {
                 NLog.LogManager.Shutdown();
             }
-            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

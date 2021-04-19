@@ -1,3 +1,8 @@
+using AutoMapper;
+using FluentMigrator.Runner;
+using MetricsManager.DAL;
+using MetricsManager.DAL.Implementation;
+using MetricsManager.DAL.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,25 +28,37 @@ namespace MetricsManager
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeWork1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "“рынтынтын", Version = "v1" });
             });
+
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
+
+            var configure = new MapperConfiguration(con => con.AddProfile(new MapperProfile()));
+            var mapper = configure.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(mig 
+                => mig.AddSQLite()
+                .WithGlobalConnectionString(new SqlSettingsProvider().GetConnection()).
+                ScanIn(typeof(Startup).Assembly).For.Migrations()
+                ).AddLogging(lb => lb
+                    .AddFluentMigratorConsole());
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeWork1 v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ўо да ни шо v1"));
             }
 
             app.UseHttpsRedirection();
@@ -54,6 +71,8 @@ namespace MetricsManager
             {
                 endpoints.MapControllers();
             });
+
+            migrationRunner.MigrateUp();
         }
     }
 }
