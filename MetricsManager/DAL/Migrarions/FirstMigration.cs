@@ -22,31 +22,42 @@ namespace MetricsManager.DAL.Migrarions
         public override void Up()
         {
             Create.Table("agentinfo")
-                .WithColumn("agentId").AsInt64().PrimaryKey().Identity()
-                .WithColumn("uri").AsString();
+                .WithColumn("id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("uri").AsString()
+                .WithColumn("agent").AsInt64();
+
             Create.Table("cpumetrics")
                 .WithColumn("id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("agentId").AsInt64()
+                .WithColumn("agentid").AsInt64()
+                .ForeignKey("agentinfo", "id")
                 .WithColumn("value").AsInt64()
                 .WithColumn("time").AsInt64();
+
             Create.Table("dotnetmetrics")
                .WithColumn("id").AsInt64().PrimaryKey().Identity()
-               .WithColumn("agentId").AsInt64()
+               .WithColumn("agentid").AsInt64()
+               .ForeignKey("agentinfo", "id")
                .WithColumn("value").AsInt64()
                .WithColumn("time").AsInt64();
+
             Create.Table("hddmetrics")
                 .WithColumn("id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("agentId").AsInt64()
+                .WithColumn("agentid").AsInt64()
+                .ForeignKey("agentinfo", "id")
                 .WithColumn("freesize").AsInt64()
                 .WithColumn("time").AsInt64();
+
             Create.Table("networkmetrics")
                 .WithColumn("id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("agentId").AsInt64()
+                .WithColumn("agentid").AsInt64()
+                .ForeignKey("agentinfo", "id")
                 .WithColumn("value").AsInt64()
                 .WithColumn("time").AsInt64();
+
             Create.Table("rammetrics")
                 .WithColumn("id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("agentId").AsInt64()
+                .WithColumn("agentid").AsInt64()
+                .ForeignKey("agentinfo", "id")
                 .WithColumn("available").AsInt64()
                 .WithColumn("time").AsInt64();
         }

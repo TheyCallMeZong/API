@@ -5,52 +5,47 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MetricsManager.DAL.Implementation
 {
-    public class CpuMetricsRepository : ICpuMetricsRepository
+    public class NetWorkMetricsRepository : INetWorkMetricsRepository
     {
         private IGetConnection _connection;
-        public CpuMetricsRepository(IGetConnection connection)
+
+        public NetWorkMetricsRepository(IGetConnection connection)
         {
             _connection = connection;
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
 
-        public void Create(CpuMetrics item)
+        public void Create(NetWorkMetrics item)
         {
             using var connection = new SQLiteConnection(_connection.GetConnection());
-
-            connection.Execute("Insert into cpumetrics (agentid, value, time) VALUES (@agentid, @value, @time)", 
-                new{
+            connection.Execute("insert into networkmetrics (agentid, value, time) VALUES (@agentid, @value, @time)",
+                new
+                {
                     agentid = item.AgentId,
                     value = item.Value,
                     time = item.Time
-            });
-
+                });
         }
 
-        public IList<CpuMetrics> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
+        public IList<NetWorkMetrics> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             using var connection = new SQLiteConnection(_connection.GetConnection());
-
-            return connection
-                .Query<CpuMetrics>("select * from cpumetrics where time >@fromtime and time <@totime", 
-                new 
-                { 
+            return connection.Query<NetWorkMetrics>("select * from networkmetrics where time >@fromtime and time < @totime",
+                new
+                {
                     fromtime = fromTime.ToUnixTimeSeconds(),
                     totime = toTime.ToUnixTimeSeconds()
-                })
-                .ToList();
+                }).ToList();
         }
 
-        public IList<CpuMetrics> GettAll()
+        public IList<NetWorkMetrics> GettAll()
         {
             using var connection = new SQLiteConnection(_connection.GetConnection());
-
-            return connection
-                .Query<CpuMetrics>("select * from cpumetrics")
-                .ToList();
+            return connection.Query<NetWorkMetrics>("select * from networkmetrics").ToList();
         }
     }
 }

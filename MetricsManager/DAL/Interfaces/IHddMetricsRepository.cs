@@ -9,5 +9,6 @@ namespace MetricsManager.DAL.Interfaces
     interface IHddMetricsRepository
         : IRepository<HddMetrics>
     {
+        IList<HddMetrics> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime);
     }
 }

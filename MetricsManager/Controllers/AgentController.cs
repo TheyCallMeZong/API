@@ -29,7 +29,7 @@ namespace MetricsManager.Controllers
 //Polly and HttpClient
 //по итогу у меня 2 базы
         {
-            _logger.LogInformation($"на вход в пришло {agentInfo.AgentId} + {agentInfo.AgentAdress}");
+            _logger.LogInformation($"на вход в пришло {agentInfo.Agent} + {agentInfo.AgentAdress}");
             return Ok();
         }
         

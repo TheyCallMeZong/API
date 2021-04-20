@@ -1,5 +1,6 @@
 using AutoMapper;
 using FluentMigrator.Runner;
+using MetricsManager.Client;
 using MetricsManager.DAL;
 using MetricsManager.DAL.Implementation;
 using MetricsManager.DAL.Interfaces;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +32,11 @@ namespace MetricsManager
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
+
+            services.AddHttpClient<IManagerMetricsClient, ManagerMetricsClient>()
+                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ =>
+                TimeSpan.FromMilliseconds(1000)));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -37,7 +44,14 @@ namespace MetricsManager
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Трынтынтын", Version = "v1" });
             });
 
+            services.AddSingleton<IGetConnection, SqlSettingsProvider>();
+
             services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddSingleton<INetWorkMetricsRepository, NetWorkMetricsRepository>();
+            services.AddSingleton<IAgentRepository, AgentInfoRepository>();
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddSingleton<IDotnetMetricsRepository, DotNetMetricsRepository>();
 
             var configure = new MapperConfiguration(con => con.AddProfile(new MapperProfile()));
             var mapper = configure.CreateMapper();

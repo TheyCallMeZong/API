@@ -10,6 +10,7 @@ namespace MetricsManager.Responses
     {
         public int Id { get; set; }
         public Uri AgentAdress { get; set; }
+        public int Agent { get; set; }
     }
 
     public class AllAgentInfoResponses

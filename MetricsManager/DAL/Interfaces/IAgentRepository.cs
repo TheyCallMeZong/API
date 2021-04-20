@@ -2,7 +2,7 @@
 
 namespace MetricsManager.DAL.Interfaces
 {
-    public interface IAggentRepository 
+    public interface IAgentRepository 
         : IRepository<AgentInfo>
     {
     }

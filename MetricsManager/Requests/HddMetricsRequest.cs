@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace MetricsManager.Requests
 {
-    /// <summary>
-    /// используем в качестве запроса
-    /// </summary>
-    public class CpuMetricsRequst
+    public class HddMetricsRequest
     {
-        public int Value { get; set; }
         public DateTimeOffset Time { get; set; }
+        public int AgentId { get; set; }
     }
 }

@@ -9,5 +9,6 @@ namespace MetricsManager.DAL.Interfaces
     interface IRamMetricsRepository
         : IRepository<RamMetrics>
     {
+        IList<RamMetrics> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime);
     }
 }

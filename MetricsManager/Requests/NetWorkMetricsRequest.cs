@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Models
+namespace MetricsManager.Requests
 {
-    public class NetWorkMetrics
+    public class NetWorkMetricsRequest
     {
-        public int Id { get; set; }
-        public int Value { get; set; }
         public DateTimeOffset Time { get; set; }
         public int AgentId { get; set; }
     }

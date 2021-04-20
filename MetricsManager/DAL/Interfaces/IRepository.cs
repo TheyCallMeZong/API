@@ -10,6 +10,5 @@ namespace MetricsManager.DAL.Interfaces
     {
         void Create(T item);
         IList<T> GettAll();
-        IList<T> GetByTimePeriod(DateTimeOffset fromTime, DateTimeOffset toTime);
     }
 }
