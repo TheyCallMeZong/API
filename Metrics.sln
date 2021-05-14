@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManagerTests", "Metr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgentTests", "MetricsAgentTests\MetricsAgentTests.csproj", "{6C2AAFE0-41FB-472A-9DE8-BA236F3472DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsCommon", "MetricsCommon\MetricsCommon.csproj", "{EF506270-5C76-4A6C-B68C-C18ED6C668CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsCommon", "MetricsCommon\MetricsCommon.csproj", "{EF506270-5C76-4A6C-B68C-C18ED6C668CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

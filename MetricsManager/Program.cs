@@ -1,12 +1,9 @@
+using System;
+using NLog.Web;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NLog.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace MetricsManager
 {
@@ -29,6 +26,7 @@ namespace MetricsManager
             {
                 NLog.LogManager.Shutdown();
             }
+
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -37,11 +35,13 @@ namespace MetricsManager
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://localhost:5050");
                 })
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders(); 
-                logging.SetMinimumLevel(LogLevel.Trace); 
-            }).UseNLog();
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                })
+                .UseNLog();
     }
 }

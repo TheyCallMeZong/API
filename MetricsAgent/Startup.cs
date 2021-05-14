@@ -1,20 +1,22 @@
-using MetricsAgent.Implementation;
-using MetricsAgent.Interface;
+using System;
+using AutoMapper;
+using FluentMigrator.Runner;
+using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL.Repository;
+using MetricsAgent.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using AutoMapper;
-using MetricsAgent.Mapper;
-using MetricsAgent.DAL.Interfaces;
-using MetricsAgent.DAL;
-using FluentMigrator.Runner;
-using Quartz.Spi;
-using MetricsAgent.Jobs;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Spi;
+using System.Data.SQLite;
+using System.IO;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 namespace MetricsAgent
 {
@@ -25,60 +27,80 @@ namespace MetricsAgent
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
-            });
 
             services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
 
             var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
             var mapper = mapperConfiguration.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddSingleton<IRepositoryCpuMetrics, CpuMetricsRepository>();
-            services.AddSingleton<IRepositoryDotNetMetrics, DotNetMetricsRepository>();
-            services.AddSingleton<IRepositoryHddMetrics, HddMetricsRepository>();
-            services.AddSingleton<IRepositoryNetWorkMetrics, NetWorkRepository>();
-            services.AddSingleton<IRepositoryRamMetrics, RamMetricsRepository>();
-
             services.AddFluentMigratorCore()
-                .ConfigureRunner(mig => 
-                mig.AddSQLite()
-                .WithGlobalConnectionString(new SqlSettingsProvider().GetConnectionString())
-                .ScanIn(typeof(Startup).Assembly).For.Migrations()
+                .ConfigureRunner(rb => rb
+                    .AddSQLite()
+                    .WithGlobalConnectionString(new SqlSettingsProvider().GetConnectionString())
+                    .ScanIn(typeof(Startup).Assembly).For.Migrations()
                 ).AddLogging(lb => lb
                     .AddFluentMigratorConsole());
 
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
-            services.AddSingleton<CpuMetricsJob>();
+            services.AddSingleton<CpuMetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(CpuMetricsJob),
+                jobType: typeof(CpuMetricJob),
                 cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton<RamMetricsJob>();
+            services.AddSingleton<RamMetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(RamMetricsJob),
+                jobType: typeof(RamMetricJob),
                 cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton<HddMetricsJob>();
+            services.AddSingleton<HddMetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(HddMetricsJob),
+                jobType: typeof(HddMetricJob),
                 cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton<DotNetMetricsJob>();
+            services.AddSingleton<DotNetMetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(DotNetMetricsJob),
+                jobType: typeof(DotNetMetricJob),
                 cronExpression: "0/5 * * * * ?"));
-            services.AddSingleton<NetWorkMetricsJob>();
+            services.AddSingleton<NetworkMetricJob>();
             services.AddSingleton(new JobSchedule(
-                jobType: typeof(NetWorkMetricsJob),
+                jobType: typeof(NetworkMetricJob),
                 cronExpression: "0/5 * * * * ?"));
             services.AddHostedService<QuartzHostedService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API сервиса агента сбора метрик",
+                    Description = "Страница для тестирования работы API",
+                    TermsOfService = new Uri("https://coderda.com"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Kiverin",
+                        Email = string.Empty,
+                        Url = new Uri("https://coderda.com"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Free license",
+                        Url = new Uri("https://coderda.com"),
+                    }
+                });
+                var xmlFile =
+                    $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
@@ -86,11 +108,7 @@ namespace MetricsAgent
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MetricsAgent v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -102,6 +120,13 @@ namespace MetricsAgent
             });
 
             migrationRunner.MigrateUp();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса агента сбора метрик");
+                c.RoutePrefix = string.Empty;
+            });
         }
     }
 }

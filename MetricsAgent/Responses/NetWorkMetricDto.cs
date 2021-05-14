@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MetricsAgent.Requests
+
+namespace MetricsAgent.Responses
 {
-    public class NetWorkMetricDto
+    public class AllNetworkMetricsResponse
     {
-        public int Id { get; set; }
+        public List<NetworkMetricDto> Metrics { get; set; }
+    }
+    public class NetworkMetricDto
+    {
         public DateTimeOffset Time { get; set; }
         public int Value { get; set; }
-    }
-    
-    public class AllnetWorkResponse
-    {
-        public List<NetWorkMetricDto> Metrics { get; set; }
+        public int Id { get; set; }
     }
 }
